@@ -9,7 +9,7 @@ skipTime = 60;
 vid.CurrentTime = skipTime; % skipping 
 
 %% Constant for blob analysis
-fishElem = strel('diamond', 10); % TODO: Adjust value 
+fishElem = strel('disk', 10); % TODO: Adjust value 
 hBlobAnalysis = vision.BlobAnalysis('MinimumBlobArea',3500,...
         'MaximumBlobArea',18000); % TODO: Adjust value
 
@@ -28,7 +28,8 @@ while vid.CurrentTime < skipTime + 0.75
     figure(1)    
     tiledlayout(1,3);   
     %% Image Pre-Processing 
-    preimage = Preprocess(frame);
+    encolorimage=enhanceFishImage(frame);
+    preimage = Preprocess(encolorimage);
     enimage = enhanceFishImage(frame);
     inpainted = RemoveNet(preimage);
     %% Get fish
@@ -131,7 +132,7 @@ function [annotated,bw_inverted,Ibwopen,objCentroid] = extractFish(inpainted,fis
     image = inpainted;
     %image = imsharpen(inpainted); % TODO: might be unnesscary
     % Thresholding
-    bw = imbinarize(image,"adaptive","Sensitivity",0.7);
+    bw = imbinarize(image,"adaptive","Sensitivity",0.8);
     bw_inverted = ~bw;
     % Remove disturbances
     Ibwopen = imopen(bw_inverted,fishElem);
