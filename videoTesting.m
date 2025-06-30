@@ -14,8 +14,8 @@ hBlobAnalysis = vision.BlobAnalysis('MinimumBlobArea',3500,...
 % each row: [ID, x,y,vx, vy, frames]
 knownFish = []; 
 nextFishID = 1;
-maxDist = 125;
-maxPredictionError = 100; 
+maxDist = 200;
+maxPredictionError = 150; 
 savedFish = [];
 while vid.CurrentTime < skipTime + 0.75
     frame = readFrame(vid);
@@ -24,7 +24,7 @@ while vid.CurrentTime < skipTime + 0.75
     %% Displaying 
     set(gcf, 'Position', get(0, 'Screensize'));
     figure(1)    
-    tiledlayout(1,3);   
+    tiledlayout(1,2);   
     %% Image Pre-Processing 
     preimage = Preprocess(frame);
     inpainted = RemoveNet(preimage);
@@ -93,15 +93,14 @@ while vid.CurrentTime < skipTime + 0.75
         %imwrite(annotated, fullFileName);
     end
     %% Displaying
-    nexttile
-    imshow(bw_inverted);
+    % nexttile
+    % imshow(bw_inverted);
     nexttile
     imshow(removedDisturb);
     nexttile
     imshow(annotated)
 end
 disp(unique(savedFish))
-
 function I8 = Preprocess(img)
     I3 = rgb2gray(img);
     I4 = imadjust(I3);
@@ -109,7 +108,6 @@ function I8 = Preprocess(img)
     I6 = adapthisteq(I5);
     I7 = imsharpen(I6);
     I8 = medfilt2(I7);
-
 end
 
 function inpainted = RemoveNet(img)
